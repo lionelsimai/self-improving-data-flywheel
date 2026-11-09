@@ -1,0 +1,10 @@
+# LoRA fine-tune config (mirrors data_flywheel.train.LoraConfig defaults)
+base_model: meta-llama/Llama-3.2-1B-Instruct
+rank: 8
+alpha: 16
+dropout: 0.05
+learning_rate: 0.0002
+epochs: 3
+target_modules: [q_proj, v_proj]
+# Real run: load train.jsonl from a cycle, train with peft on a GPU, then
+# re-run the held-out eval. The --dry-run path validates everything offline.
