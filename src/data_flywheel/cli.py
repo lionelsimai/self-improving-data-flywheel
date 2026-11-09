@@ -12,20 +12,23 @@ import json
 from pathlib import Path
 
 from .cycle import run_cycle
-from .evaluate import default_held_out
 from .feedback import Feedback, FeedbackStore
 from .synthetic import TrainingExample
 from .train import LoraConfig, dry_run
+from .training_data import default_training_feedback
 
 
 def _seed_demo_db(path: Path) -> None:
+    """Seed the demo with hand-written TRAINING feedback.
+
+    The seed is disjoint from the held-out eval set (asserted by tests) —
+    before 0.1.1 this seeded from the held-out set itself (train-on-test).
+    """
     store = FeedbackStore(path)
     if store.path.exists():
         store.path.unlink()
-    for item in default_held_out():
-        store.add(Feedback(prompt=item.prompt, response="(wrong answer)",
-                           rating=-1, expected=item.expected))
-    store.add(Feedback(prompt="Say hello", response="Hello!", rating=1))
+    for fb in default_training_feedback():
+        store.add(fb)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -47,6 +50,9 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--data", required=True)
     t.add_argument("--dry-run", action="store_true")
     t.add_argument("--out", default="runs/train")
+    t.add_argument("--lora-config", default="config/lora.yaml",
+                   help="LoRA YAML to read + validate into the manifest "
+                        "(falls back to built-in defaults if absent)")
     args = ap.parse_args(argv)
 
     if args.cmd == "demo":
@@ -71,7 +77,10 @@ def main(argv: list[str] | None = None) -> int:
     if not args.dry_run:
         print("Real GPU training is out of scope for this build; use --dry-run.")
         return 2
-    print(json.dumps(dry_run(examples, LoraConfig(), args.out), indent=2, default=str))
+    lora_path = Path(args.lora_config)
+    manifest = dry_run(examples, LoraConfig(), args.out,
+                       lora_config_path=lora_path if lora_path.exists() else None)
+    print(json.dumps(manifest, indent=2, default=str))
     return 0
 
 

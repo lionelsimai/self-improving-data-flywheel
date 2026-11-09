@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "self-improving-data-flywheel"
-version = "0.1.0"
+version = "0.1.1"
 description = "Thumbs-down to synthetic data to LoRA fine-tune loop with measured eval delta"
 readme = "README.md"
 license = {text = "MIT"}

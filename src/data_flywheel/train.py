@@ -39,9 +39,55 @@ class LoraConfig:
         return errs
 
 
+def load_lora_config(path: str | Path) -> LoraConfig:
+    """Parse and validate ``config/lora.yaml`` into a :class:`LoraConfig`.
+
+    Stdlib-only mini-parser for the flat ``key: value`` file (the project
+    has no YAML dependency). Raises ``ValueError`` on a missing key, an
+    unparsable value, or a field that fails ``LoraConfig.validate()``.
+    """
+    raw: dict[str, str] = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or ":" not in line:
+            continue
+        key, _, value = line.partition(":")
+        raw[key.strip()] = value.strip()
+
+    def _req(key: str) -> str:
+        if key not in raw:
+            raise ValueError(f"lora config {path} is missing key: {key}")
+        return raw[key]
+
+    try:
+        modules = tuple(m.strip() for m in
+                        _req("target_modules").strip("[]").split(",") if m.strip())
+        cfg = LoraConfig(
+            base_model=_req("base_model"), rank=int(_req("rank")),
+            alpha=int(_req("alpha")), dropout=float(_req("dropout")),
+            learning_rate=float(_req("learning_rate")),
+            epochs=int(_req("epochs")), target_modules=modules)
+    except ValueError as e:
+        raise ValueError(f"invalid lora config {path}: {e}") from e
+    errors = cfg.validate()
+    if errors:
+        raise ValueError(f"invalid lora config {path}: " + "; ".join(errors))
+    return cfg
+
+
 def dry_run(examples: list[TrainingExample], config: LoraConfig,
-            out_dir: str | Path) -> dict[str, object]:
-    """Validate data + config and write a run manifest. No GPU, no training."""
+            out_dir: str | Path,
+            lora_config_path: str | Path | None = None) -> dict[str, object]:
+    """Validate data + config and write a run manifest. No GPU, no training.
+
+    When ``lora_config_path`` is given, that YAML file is read and
+    validated and *its* fields are recorded in the manifest (the passed
+    ``config`` is then only a fallback for when no file is supplied).
+    """
+    source = "defaults"
+    if lora_config_path is not None:
+        config = load_lora_config(lora_config_path)
+        source = str(lora_config_path)
     errors = config.validate()
     if not examples:
         errors.append("no training examples")
@@ -55,6 +101,7 @@ def dry_run(examples: list[TrainingExample], config: LoraConfig,
     manifest: dict[str, object] = {
         "mode": "dry-run", "examples": len(examples), "dataset_sha": digest,
         "config": {**asdict(config), "target_modules": list(config.target_modules)},
+        "lora_config_source": source,
         "status": "validated — ready for GPU training",
     }
     out = Path(out_dir)

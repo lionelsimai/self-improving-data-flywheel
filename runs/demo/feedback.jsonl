@@ -1,0 +1,11 @@
+{"prompt": "What is the capital of Japan?", "response": "London", "rating": -1, "expected": "Tokyo", "ts": 1794191112.8717182, "id": "train-01"}
+{"prompt": "What is the capital of Australia?", "response": "Sydney", "rating": -1, "expected": "Canberra", "ts": 1794191112.8717234, "id": "train-02"}
+{"prompt": "How many minutes are in one hour?", "response": "100", "rating": -1, "expected": "60", "ts": 1794191112.871726, "id": "train-03"}
+{"prompt": "What is 3 multiplied by 5?", "response": "20", "rating": -1, "expected": "15", "ts": 1794191112.8717277, "id": "train-04"}
+{"prompt": "What is the chemical symbol for gold?", "response": "Ag", "rating": -1, "expected": "Au", "ts": 1794191112.871729, "id": "train-05"}
+{"prompt": "Who painted the Mona Lisa?", "response": "Vincent van Gogh", "rating": -1, "expected": "Leonardo da Vinci", "ts": 1794191112.8717313, "id": "train-06"}
+{"prompt": "What language is spoken in Japan?", "response": "Mandarin", "rating": -1, "expected": "Japanese", "ts": 1794191112.871733, "id": "train-07"}
+{"prompt": "What gas do plants absorb from the air?", "response": "Oxygen", "rating": -1, "expected": "Carbon dioxide", "ts": 1794191112.8717349, "id": "train-08"}
+{"prompt": "How many sides does a hexagon have?", "response": "8", "rating": -1, "expected": "6", "ts": 1794191112.871736, "id": "train-09"}
+{"prompt": "What is the square root of 81?", "response": "8", "rating": -1, "expected": "9", "ts": 1794191112.8717372, "id": "train-10"}
+{"prompt": "Say hello", "response": "Hello!", "rating": 1, "expected": "", "ts": 1794191112.8717394, "id": "train-up-01"}

@@ -1,0 +1,23 @@
+{"prompt": "What is the capital of Japan?", "completion": "Tokyo", "source": "correction-0"}
+{"prompt": "what's the capital of Japan?", "completion": "Tokyo", "source": "paraphrase-0-0"}
+{"prompt": "What is the capital city of Japan?", "completion": "Tokyo", "source": "paraphrase-0-1"}
+{"prompt": "What is the capital of Australia?", "completion": "Canberra", "source": "correction-1"}
+{"prompt": "what's the capital of Australia?", "completion": "Canberra", "source": "paraphrase-1-0"}
+{"prompt": "What is the capital city of Australia?", "completion": "Canberra", "source": "paraphrase-1-1"}
+{"prompt": "How many minutes are in one hour?", "completion": "60", "source": "correction-2"}
+{"prompt": "what number of minutes are in one hour?", "completion": "60", "source": "paraphrase-2-0"}
+{"prompt": "What is 3 multiplied by 5?", "completion": "15", "source": "correction-3"}
+{"prompt": "what's 3 multiplied by 5?", "completion": "15", "source": "paraphrase-3-0"}
+{"prompt": "What is 3 times 5?", "completion": "15", "source": "paraphrase-3-1"}
+{"prompt": "What is the chemical symbol for gold?", "completion": "Au", "source": "correction-4"}
+{"prompt": "what's the chemical symbol for gold?", "completion": "Au", "source": "paraphrase-4-0"}
+{"prompt": "Who painted the Mona Lisa?", "completion": "Leonardo da Vinci", "source": "correction-5"}
+{"prompt": "who is the artist behind the Mona Lisa?", "completion": "Leonardo da Vinci", "source": "paraphrase-5-0"}
+{"prompt": "What language is spoken in Japan?", "completion": "Japanese", "source": "correction-6"}
+{"prompt": "What language is used in Japan?", "completion": "Japanese", "source": "paraphrase-6-0"}
+{"prompt": "What gas do plants absorb from the air?", "completion": "Carbon dioxide", "source": "correction-7"}
+{"prompt": "What gas do plants take in from the air?", "completion": "Carbon dioxide", "source": "paraphrase-7-0"}
+{"prompt": "How many sides does a hexagon have?", "completion": "6", "source": "correction-8"}
+{"prompt": "what number of sides does a hexagon have?", "completion": "6", "source": "paraphrase-8-0"}
+{"prompt": "What is the square root of 81?", "completion": "9", "source": "correction-9"}
+{"prompt": "what's the square root of 81?", "completion": "9", "source": "paraphrase-9-0"}

@@ -16,6 +16,7 @@ class Feedback:
     rating: int  # +1 thumbs up, -1 thumbs down
     expected: str = ""
     ts: float = 0.0
+    id: str = ""
 
     def __post_init__(self) -> None:
         if self.rating not in (1, -1):
@@ -30,6 +31,7 @@ class FeedbackStore:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.skipped_lines = 0
 
     def add(self, fb: Feedback) -> None:
         """Append one feedback record."""
@@ -37,14 +39,33 @@ class FeedbackStore:
             fh.write(json.dumps(asdict(fb)) + "\n")
 
     def load(self) -> list[Feedback]:
-        """Load all records; returns [] if the file does not exist."""
+        """Load all records; returns [] if the file does not exist.
+
+        Malformed lines (bad JSON, wrong fields, invalid rating) are
+        skipped and counted in ``self.skipped_lines`` instead of crashing
+        the load. Records are deduplicated by (prompt, correction) —
+        the first occurrence wins.
+        """
+        self.skipped_lines = 0
         if not self.path.exists():
             return []
         out: list[Feedback] = []
         for line in self.path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
+            if not line.strip():
+                continue
+            try:
                 out.append(Feedback(**json.loads(line)))
-        return out
+            except (json.JSONDecodeError, TypeError, ValueError):
+                self.skipped_lines += 1
+        seen: set[tuple[str, str]] = set()
+        deduped: list[Feedback] = []
+        for fb in out:
+            key = (fb.prompt, fb.expected)
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(fb)
+        return deduped
 
     def failures(self) -> list[Feedback]:
         """Only thumbs-down records — the flywheel's fuel."""

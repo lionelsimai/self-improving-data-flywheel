@@ -18,8 +18,12 @@ def run_cycle(feedback_path: str | Path, work_dir: str | Path,
     held_out = default_held_out()
     base = list(base_knowledge or [])
     before = score_model(base, held_out)
-    manifest = dry_run(synthetic, LoraConfig(), Path(work_dir) / "run") if synthetic else {
-        "mode": "dry-run", "examples": 0, "status": "no synthetic data — skipped"}
+    lora_yaml = Path(__file__).resolve().parents[2] / "config" / "lora.yaml"
+    manifest = (dry_run(synthetic, LoraConfig(), Path(work_dir) / "run",
+                        lora_config_path=lora_yaml if lora_yaml.exists() else None)
+                if synthetic else {
+                    "mode": "dry-run", "examples": 0,
+                    "status": "no synthetic data — skipped"})
     after = score_model(base + synthetic, held_out)
     delta = EvalDelta(before=before, after=after)
     return {"feedback": store.stats(), "failures_used": len(failures),
